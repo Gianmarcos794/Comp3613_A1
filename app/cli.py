@@ -41,7 +41,9 @@ def cmd_init(args: argparse.Namespace) -> None:
             print(f"Database not ready yet while dropping ({exc}); continuing…")
     print("Creating tables…")
     ensure_db_and_tables()
-    print(f"Database ready ({get_settings().database_uri}).")
+    from app.config import mask_database_uri
+
+    print(f"Database ready ({mask_database_uri(get_settings().database_uri)}).")
     if getattr(args, "seed", True):
         cmd_seed(args)
 

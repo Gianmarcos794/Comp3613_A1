@@ -438,7 +438,12 @@ After all three workflows worked, the Guide listed loose ends against the design
 
 Phase 6. Public Render URL (not localhost). Markers open this to mark the three workflows.
 
-https://
+https://faststarter-07fs.onrender.com
+
+- Hosted on Render's free plan in Oregon: web service `faststarter` and Postgres 16 `faststarter-db`, created with the Render MCP to match `render.yaml`.
+- Start command: `python manage.py init --no-drop && python manage.py run --host 0.0.0.0 --port $PORT`. Tables are not dropped on reboot, and the seed users are added only if they are missing.
+- The free web service sleeps when idle, so the first request can take about a minute. The free database expires on **2026-11-11**.
+- **Verify (student):** the database was reset once with a one-off deploy that dropped the tables. The student then ran all three workflows on the public URL (Submit Application as bob, Publish/Manage Internships as comp1, Match Application as admin) and reported that they work.
 
 ## Logins
 
@@ -446,9 +451,11 @@ Every account a marker needs, including extra users you added. Starter accounts:
 
 - bob / bobpass: student (seeded; Submit Application)
 - admin / adminpass: admin (Match Application, Add company)
-- Company login: not seeded. Create one with the admin's **Add company** after deploy (Phase 6) and list it here.
+- comp1 / comppass: company (Publish/Manage Internships). Not seeded: created on the live site with the admin's **Add company**.
 
 ## YouTube URL
+
+https://youtu.be/RPX4wAlBhw8
 
 ## Session transcripts
 
