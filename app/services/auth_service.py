@@ -1,7 +1,17 @@
 from app.repositories.user import UserRepository
 from app.utilities.security import encrypt_password, verify_password, create_access_token
-from app.schemas.user import RegularUserCreate
+from app.schemas.user import StudentUserCreate
 from typing import Optional
+
+
+class RegistrationError(Exception):
+    """A sign-up the rules refuse; the message is safe to show the student."""
+
+
+def is_edu_email(email: str) -> bool:
+    domain = email.rsplit("@", 1)[-1].strip().lower()
+    return "@" in email and domain.endswith(".edu")
+
 
 class AuthService:
     def __init__(self, user_repo: UserRepository):
@@ -15,7 +25,11 @@ class AuthService:
         return access_token
 
     def register_user(self, username: str, email: str, password: str):
-        new_user = RegularUserCreate(
+        if not is_edu_email(email):
+            raise RegistrationError("Please sign up with your university email (an address ending in .edu).")
+        if self.user_repo.get_by_username(username) or self.user_repo.get_by_email(email):
+            raise RegistrationError("Username or email already exists")
+        new_user = StudentUserCreate(
             username=username, 
             email=email, 
             password=encrypt_password(password)

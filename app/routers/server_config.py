@@ -377,7 +377,7 @@ def _seed_demo_users() -> tuple[int, int]:
     from app.utilities.security import encrypt_password
 
     demo_users = [
-        ("bob", "bob@example.com", "bobpass", "regular_user"),
+        ("bob", "bob@example.com", "bobpass", "student"),
         ("admin", "admin@example.com", "adminpass", "admin"),
     ]
     created = 0

@@ -53,3 +53,23 @@ async def is_admin_dep(user: AuthDep):
     return user
 
 AdminDep = Annotated[User, Depends(is_admin_dep)]
+
+async def is_student_dep(user: AuthDep):
+    if user.role != "student":
+        raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Only students can access this page",
+            )
+    return user
+
+StudentDep = Annotated[User, Depends(is_student_dep)]
+
+async def is_company_dep(user: AuthDep):
+    if user.role != "company":
+        raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Only companies can access this page",
+            )
+    return user
+
+CompanyDep = Annotated[User, Depends(is_company_dep)]

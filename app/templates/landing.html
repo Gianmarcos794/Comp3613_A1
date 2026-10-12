@@ -1,43 +1,66 @@
 {% extends "base.html" %}
-{% block title %}FastStarter{% endblock %}
+{% block title %}InternSearch{% endblock %}
 
 {% block content %}
 <div class="landing">
-  <div class="landing-orb" aria-hidden="true"></div>
-  <div class="landing-orb landing-orb-2" aria-hidden="true"></div>
-
   <header class="landing-nav">
-    <a class="brand-wordmark" href="{{ url_for('index_view') }}">FastStarter</a>
+    <a class="brand-wordmark" href="{{ url_for('index_view') }}">Intern<span class="brand-accent">Search</span></a>
     <div class="landing-nav-actions">
       {% if user_logged_in %}
-      <a class="btn-landing btn-landing-ghost" href="{{ app_home }}">Open app</a>
+      <a class="btn-landing btn-landing-ghost" href="{{ app_home }}">Open dashboard</a>
       <a class="btn-landing btn-landing-ghost" href="{{ url_for('logout') }}">Sign out</a>
       {% else %}
       <a class="btn-landing btn-landing-ghost" href="{{ url_for('login_view') }}">Sign in</a>
-      <a class="btn-landing btn-landing-primary" href="{{ url_for('register_view') }}">Get started</a>
+      <a class="btn-landing btn-landing-primary" href="{{ url_for('register_view') }}">Student sign up</a>
       {% endif %}
     </div>
   </header>
 
-  <main class="landing-hero">
-    <p class="landing-kicker">Coursework starter</p>
-    <h1 class="brand-wordmark">FastStarter</h1>
-    <p class="landing-lead">
-      A placeholder landing page for your COMP 3613 app.
-      Phase 5 theming replaces these colors, type, and copy with your brand.
-    </p>
-    <div class="landing-cta">
-      {% if user_logged_in %}
-      <a class="btn-landing btn-landing-primary" href="{{ app_home }}">Continue to app</a>
-      {% else %}
-      <a class="btn-landing btn-landing-primary" href="{{ url_for('register_view') }}">Create account</a>
-      <a class="btn-landing btn-landing-ghost" href="{{ url_for('login_view') }}">Sign in</a>
-      {% endif %}
-    </div>
+  <main class="landing-main">
+    <section>
+      <p class="landing-kicker">Departmental internship placement</p>
+      <h1 class="landing-title">Find the internship that <span class="brand-accent">fits you</span>.</h1>
+      <p class="landing-lead">
+        Submit one application, and the department matches you to an open internship
+        from a participating company that fits your program, year and GPA.
+      </p>
+      <div class="landing-cta">
+        {% if user_logged_in %}
+        <a class="btn-landing btn-landing-primary" href="{{ app_home }}">Continue to dashboard</a>
+        {% else %}
+        <a class="btn-landing btn-landing-primary" href="{{ url_for('register_view') }}">Create a student account</a>
+        <a class="btn-landing btn-landing-ghost" href="{{ url_for('login_view') }}">Sign in</a>
+        {% endif %}
+      </div>
+    </section>
+
+    <aside class="landing-steps" aria-label="How InternSearch works">
+      <div class="landing-step">
+        <span class="material-symbols-outlined">edit_note</span>
+        <div>
+          <h3>Students apply</h3>
+          <p>Sign up with your university email and submit your application.</p>
+        </div>
+      </div>
+      <div class="landing-step">
+        <span class="material-symbols-outlined">work</span>
+        <div>
+          <h3>Companies post internships</h3>
+          <p>Approved companies publish positions and their requirements.</p>
+        </div>
+      </div>
+      <div class="landing-step">
+        <span class="material-symbols-outlined">handshake</span>
+        <div>
+          <h3>The department matches</h3>
+          <p>Each application is matched to an internship whose requirements it meets.</p>
+        </div>
+      </div>
+    </aside>
   </main>
 
   <footer class="landing-foot">
-    Demo logins after <code>python manage.py init</code>: bob / bobpass · admin / adminpass
+    InternSearch · Company accounts are created by the department.
   </footer>
 </div>
 {% endblock %}

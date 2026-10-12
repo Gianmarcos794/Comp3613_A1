@@ -1,0 +1,84 @@
+{% extends "authenticated-base.html" %}
+{% block title %}My internships · InternSearch{% endblock %}
+
+{% block additional_styles %}
+<style>
+  .internship-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 1rem;
+  }
+
+  .internship-card.is-closed {
+    background: var(--brand-bg);
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .status-open   { background: var(--brand-accent-soft); color: var(--brand-accent); }
+  .status-closed { background: #e9ecf1; color: var(--brand-muted); }
+  .status-expired { background: #fff4e5; color: #9a5b00; }
+</style>
+{% endblock %}
+
+{% block subpage_content %}
+<div class="container-fluid py-2">
+  <div class="d-flex align-items-center gap-3 mb-1">
+    <h1 class="h4 mb-0">My internships</h1>
+    {% if company %}
+    <a class="btn btn-primary btn-sm" href="{{ url_for('new_internship_view') }}">New</a>
+    {% endif %}
+  </div>
+  {% if company %}
+  <p class="text-muted mb-4">{{ company.company_name }} · {{ company.industry }}</p>
+  {% else %}
+  <div class="alert alert-warning mt-3">This login has no company profile. Ask the department to set it up.</div>
+  {% endif %}
+
+  {% if company and not internships %}
+  <div class="card shadow-sm">
+    <div class="card-body text-center p-5">
+      <p class="mb-3">You haven't published any internships yet.</p>
+      <a class="btn btn-primary" href="{{ url_for('new_internship_view') }}">Publish your first internship</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="internship-grid">
+    {% for internship in internships %}
+    {% set matched = match_counts.get(internship.id, 0) %}
+    <div class="card internship-card shadow-sm {{ 'is-closed' if internship.status == 'closed' }}">
+      <div class="card-body d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+          <h2 class="h6 mb-0">{{ internship.title }}</h2>
+          {% if internship.status == "open" and internship.deadline < today %}
+          <span class="status-badge status-expired" title="Open, but past its deadline, so it gets no new matches">Deadline passed</span>
+          {% else %}
+          <span class="status-badge status-{{ internship.status }}">{{ internship.status | capitalize }}</span>
+          {% endif %}
+        </div>
+        <p class="small mb-1">Positions: <strong>{{ matched }} / {{ internship.number_of_positions }}</strong> filled</p>
+        <p class="small text-muted mb-3">Deadline: {{ internship.deadline.strftime('%d %b %Y') }}</p>
+
+        <div class="mt-auto d-flex flex-wrap gap-2">
+          {% if internship.status == "open" %}
+          <form method="POST" action="{{ url_for('close_internship_action', internship_id=internship.id) }}"
+                onsubmit="return confirm('Close this internship? It will get no new matches and cannot be reopened or edited.');">
+            <button class="btn btn-outline-secondary btn-sm" type="submit">Close</button>
+          </form>
+          <a class="btn btn-outline-primary btn-sm" href="{{ url_for('edit_internship_view', internship_id=internship.id) }}">Edit</a>
+          {% endif %}
+          <a class="btn btn-navy btn-sm" href="{{ url_for('internship_matches_view', internship_id=internship.id) }}">View matches</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

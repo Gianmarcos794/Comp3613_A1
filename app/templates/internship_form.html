@@ -1,0 +1,71 @@
+{% extends "authenticated-base.html" %}
+{% block title %}Internship form · InternSearch{% endblock %}
+
+{% block subpage_content %}
+<div class="container-fluid py-2" style="max-width: 48rem;">
+  <div class="d-flex align-items-center gap-3 mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('user_home_view') }}">← Back</a>
+    <h1 class="h4 mb-0">{{ "Edit internship" if internship else "New internship" }}</h1>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <form method="POST"
+            action="{{ url_for('update_internship_action', internship_id=internship.id) if internship else url_for('create_internship_action') }}">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label" for="title">Title</label>
+            <input class="form-control" type="text" id="title" name="title" required
+                   value="{{ internship.title if internship else '' }}">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" required>{{ internship.description if internship else '' }}</textarea>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="location">Location</label>
+            <input class="form-control" type="text" id="location" name="location" required
+                   value="{{ internship.location if internship else '' }}">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label" for="minimum_gpa">Minimum GPA</label>
+            <input class="form-control" type="number" id="minimum_gpa" name="minimum_gpa" min="0" max="4.3" step="0.01" required
+                   value="{{ internship.minimum_gpa if internship else '' }}">
+          </div>
+
+          <div class="col-md-8">
+            <label class="form-label" for="required_program">Required program</label>
+            <input class="form-control" type="text" id="required_program" name="required_program" required
+                   value="{{ internship.required_program if internship else '' }}">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label" for="minimum_year">Minimum year</label>
+            <input class="form-control" type="number" id="minimum_year" name="minimum_year" min="1" required
+                   value="{{ internship.minimum_year if internship else '' }}">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label" for="number_of_positions">Number of positions</label>
+            <input class="form-control" type="number" id="number_of_positions" name="number_of_positions" min="1" required
+                   value="{{ internship.number_of_positions if internship else '' }}">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label" for="deadline">Deadline</label>
+            <input class="form-control" type="date" id="deadline" name="deadline" required
+                   value="{{ internship.deadline.isoformat() if internship else '' }}">
+          </div>
+        </div>
+
+        <div class="text-end mt-4">
+          <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

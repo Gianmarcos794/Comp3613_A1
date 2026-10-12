@@ -5,7 +5,7 @@
 {% block internal_css %}
 <style>
     body {
-        background-color: #f8f9fa;
+        background-color: var(--brand-bg);
     }
 
     .page-container {
@@ -19,7 +19,7 @@
     }
 
     .left-section {
-        background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+        background: linear-gradient(135deg, var(--brand-navy), var(--brand-accent));
         display: flex;
         align-items: center;
         justify-content: center;
@@ -58,7 +58,7 @@
 
             <div class="col-lg-6 bg-white">
                 <div class="right-section d-flex flex-column justify-content-center h-100">
-                    <h1 class="display-5 fw-bold text-danger mb-3">401</h1>
+                    <h1 class="display-5 fw-bold mb-3" style="color: var(--brand-navy)">401</h1>
                     <h3 class="fw-semibold mb-3">Unauthorized</h3>
                     <p class="text-muted mb-4">
                         Your session has expired or you do not have permission to access this page.

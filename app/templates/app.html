@@ -1,9 +1,76 @@
 {% extends "authenticated-base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}Dashboard · InternSearch{% endblock %}
+
+{% block additional_styles %}
+<style>
+  .application-card {
+    max-width: 30rem;
+    margin: 1.5rem auto 0;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: var(--brand-bg);
+    color: var(--brand-muted);
+  }
+
+  .status-submitted { background: #e8eefb; color: var(--brand-navy); }
+  .status-matched   { background: var(--brand-accent-soft); color: var(--brand-accent); }
+  .status-rejected  { background: #fdecec; color: #b42318; }
+</style>
+{% endblock %}
 
 {% block subpage_content %}
 <div class="container-fluid py-2">
-  <h1 class="h4 mb-2">Home</h1>
-  <p class="text-muted mb-0">Workflow screens replace this shell in Phase 5 implement.</p>
+  {% if user.role == "student" %}
+    {% if not application %}
+    <a class="btn btn-primary" href="{{ url_for('application_form_view') }}">Submit application</a>
+    {% endif %}
+
+    <div class="card application-card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h5 mb-3">My application</h1>
+
+        {% if not application %}
+        <p class="mb-0">Status: <span class="status-badge">No application yet</span></p>
+        {% else %}
+        <p class="mb-2">
+          Status:
+          <span class="status-badge status-{{ application.status }}">{{ application.status | capitalize }}</span>
+        </p>
+        <p class="text-muted small mb-3">Last submitted {{ application.submitted_date.strftime('%d %b %Y, %H:%M') }}</p>
+
+        {% if application.status == "submitted" %}
+        <p class="mb-3">The department is reviewing your application. You can still make changes.</p>
+        {% elif application.status == "rejected" %}
+        <p class="mb-3">No suitable internship was found this time. You can update your details and resubmit.</p>
+        {% elif application.status == "matched" %}
+        <p class="mb-3">You have been matched to an internship. Your application is now final.</p>
+        {% if placement %}
+        {% set match, internship, company = placement %}
+        <div class="border rounded-3 p-3" style="background: var(--brand-accent-soft); border-color: var(--brand-border) !important;">
+          <div class="fw-semibold">{{ internship.title }}</div>
+          <div class="small">{{ company.company_name }} · {{ internship.location }}</div>
+          <div class="small text-muted">Matched {{ match.matched_date.strftime('%d %b %Y') }}</div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% if application.status != "matched" %}
+        <div class="text-end">
+          <a class="btn btn-outline-primary btn-sm" href="{{ url_for('application_form_view') }}">Manage application</a>
+        </div>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+  <h1 class="h4 mb-2">Dashboard</h1>
+  <p class="text-muted mb-0">Your dashboard will appear here.</p>
+  {% endif %}
 </div>
 {% endblock %}

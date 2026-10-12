@@ -1,0 +1,92 @@
+{% extends "authenticated-base.html" %}
+{% block title %}Match application · InternSearch{% endblock %}
+
+{% block subpage_content %}
+<div class="container-fluid py-2" style="max-width: 60rem;">
+  <div class="d-flex align-items-center gap-3 mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin_home_view') }}">← Back</a>
+    <h1 class="h4 mb-0">Match application</h1>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body p-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+        <div>
+          <h2 class="h5 mb-1">{{ student.full_name }}</h2>
+          <p class="text-muted small mb-0">ID {{ student.student_id }} · Status: {{ application.status | capitalize }}</p>
+        </div>
+        {% if application.status == "submitted" %}
+        <form method="POST" action="{{ url_for('reject_application_action', application_id=application.id) }}"
+              onsubmit="return confirm('Reject this application? The student can update it and resubmit.');">
+          <button class="btn btn-outline-danger btn-sm" type="submit">Reject</button>
+        </form>
+        {% endif %}
+      </div>
+
+      <dl class="row mt-3 mb-0">
+        <dt class="col-sm-3">Program</dt><dd class="col-sm-9">{{ student.program }}</dd>
+        <dt class="col-sm-3">Year</dt><dd class="col-sm-9">{{ student.year_of_study }}</dd>
+        <dt class="col-sm-3">GPA</dt><dd class="col-sm-9">{{ "%.2f" | format(student.gpa) }}</dd>
+        <dt class="col-sm-3">Projects</dt><dd class="col-sm-9" style="white-space: pre-line;">{{ application.projects or "—" }}</dd>
+        <dt class="col-sm-3">Preferences</dt><dd class="col-sm-9 mb-0" style="white-space: pre-line;">{{ application.preferences or "—" }}</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h2 class="h5 mb-2">Eligible internships</h2>
+  {% if application.status != "submitted" %}
+  <div class="alert alert-secondary">This application is {{ application.status }}, so it can't be matched.</div>
+  {% elif eligible %}
+  <p class="text-muted small">Open internships with deadlines still ahead whose program, minimum GPA and minimum year this student meets.</p>
+  <div class="card shadow-sm">
+    <ul class="list-group list-group-flush">
+      {% for internship, company in eligible %}
+      <li class="list-group-item d-flex flex-wrap align-items-center gap-3 py-3">
+        <div class="flex-grow-1">
+          <div class="fw-semibold">{{ internship.title }}</div>
+          <div class="small text-muted">{{ company.company_name }}</div>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="modal"
+                data-bs-target="#internship-{{ internship.id }}">View</button>
+        <form method="POST" action="{{ url_for('match_application_action', application_id=application.id) }}"
+              onsubmit="return confirm('Match this student to this internship? Matches are final.');">
+          <input type="hidden" name="internship_id" value="{{ internship.id }}">
+          <button class="btn btn-primary btn-sm" type="submit">Match</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% else %}
+  <div class="alert alert-warning">
+    No open internship fits this student's program, GPA and year right now. Reject the application if none is suitable.
+  </div>
+  {% endif %}
+</div>
+
+{% for internship, company in eligible %}
+<div class="modal fade" id="internship-{{ internship.id }}" tabindex="-1" aria-labelledby="internship-{{ internship.id }}-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title h5" id="internship-{{ internship.id }}-label">Internship details</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h4 class="h6 mb-1">{{ internship.title }}</h4>
+        <p class="text-muted small">{{ company.company_name }} · {{ company.industry }} · {{ internship.location }}</p>
+        <p style="white-space: pre-line;">{{ internship.description }}</p>
+        <dl class="row small mb-0">
+          <dt class="col-6">Required program</dt><dd class="col-6">{{ internship.required_program }}</dd>
+          <dt class="col-6">Minimum GPA</dt><dd class="col-6">{{ "%.2f" | format(internship.minimum_gpa) }}</dd>
+          <dt class="col-6">Minimum year</dt><dd class="col-6">{{ internship.minimum_year }}</dd>
+          <dt class="col-6">Positions</dt><dd class="col-6">{{ internship.number_of_positions }}</dd>
+          <dt class="col-6">Deadline</dt><dd class="col-6">{{ internship.deadline.strftime('%d %b %Y') }}</dd>
+          <dt class="col-6">Contact</dt><dd class="col-6 mb-0">{{ company.contact_email }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,75 @@
+{
+  "system": "Internship Platform",
+  "actors": [
+    {
+      "name": "Student",
+      "side": "left"
+    },
+    {
+      "name": "Company",
+      "side": "right"
+    },
+    {
+      "name": "Admin",
+      "side": "right"
+    }
+  ],
+  "use_cases": [
+    {
+      "name": "Register with University Email",
+      "actors": [
+        "Student"
+      ]
+    },
+    {
+      "name": "Log In",
+      "actors": [
+        "Student",
+        "Company",
+        "Admin"
+      ]
+    },
+    {
+      "name": "Submit Application",
+      "actors": [
+        "Student"
+      ]
+    },
+    {
+      "name": "View Application Status",
+      "actors": [
+        "Student"
+      ]
+    },
+    {
+      "name": "Create Company Account",
+      "actors": [
+        "Admin"
+      ]
+    },
+    {
+      "name": "Publish/Manage Internships",
+      "actors": [
+        "Company"
+      ]
+    },
+    {
+      "name": "Match Application to Internship",
+      "actors": [
+        "Admin"
+      ],
+      "includes": [
+        "Check Requirements"
+      ]
+    },
+    {
+      "name": "Check Requirements"
+    },
+    {
+      "name": "Reject Application (No Suitable Internship)",
+      "extends": [
+        "Match Application to Internship"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+@startuml
+!pragma layout smetana
+skinparam shadowing false
+skinparam actorBorderColor #1B365D
+skinparam actorFontColor #1E232D
+skinparam usecaseBackgroundColor #FFFFFF
+skinparam usecaseBorderColor #1B365D
+skinparam usecaseFontColor #1E232D
+skinparam rectangleBorderColor #1B365D
+skinparam rectangleBackgroundColor #F8FAFC
+skinparam arrowColor #1B365D
+
+actor "Student" as Student
+
+rectangle "Internship Platform" {
+  usecase "Register with University Email" as Register_with_University_Email
+  usecase "Log In" as Log_In
+  usecase "Submit Application" as Submit_Application
+  usecase "View Application Status" as View_Application_Status
+  usecase "Create Company Account" as Create_Company_Account
+  usecase "Publish/Manage Internships" as Publish_Manage_Internships
+  usecase "Match Application to Internship" as Match_Application_to_Internship
+  usecase "Check Requirements" as Check_Requirements
+  usecase "Reject Application (No Suitable Internship)" as Reject_Application_No_Suitable_Internship
+}
+
+actor "Company" as Company
+actor "Admin" as Admin
+
+Student --> Register_with_University_Email
+Student --> Log_In
+Log_In <-- Company
+Log_In <-- Admin
+Student --> Submit_Application
+Student --> View_Application_Status
+Create_Company_Account <-- Admin
+Publish_Manage_Internships <-- Company
+Match_Application_to_Internship <-- Admin
+Match_Application_to_Internship ..> Check_Requirements : <<include>>
+Reject_Application_No_Suitable_Internship ..> Match_Application_to_Internship : <<extend>>
+
+@enduml

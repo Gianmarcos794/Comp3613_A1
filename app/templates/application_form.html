@@ -1,0 +1,66 @@
+{% extends "authenticated-base.html" %}
+{% block title %}Application form · InternSearch{% endblock %}
+
+{% block subpage_content %}
+<div class="container-fluid py-2" style="max-width: 48rem;">
+  <div class="d-flex align-items-center gap-3 mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('user_home_view') }}">← Back</a>
+    <h1 class="h4 mb-0">{{ "Edit application" if application else "Application form" }}</h1>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <form method="POST" action="{{ url_for('submit_application_action') }}">
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label" for="full_name">Name</label>
+            <input class="form-control" type="text" id="full_name" name="full_name" required
+                   value="{{ student.full_name if student else '' }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="student_id">ID</label>
+            <input class="form-control" type="text" id="student_id" name="student_id" required
+                   value="{{ student.student_id if student else '' }}">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-control" type="email" id="email" value="{{ user.email }}" readonly disabled>
+          </div>
+
+          <div class="col-md-8">
+            <label class="form-label" for="program">Program</label>
+            <input class="form-control" type="text" id="program" name="program" required
+                   value="{{ student.program if student else '' }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="year_of_study">Year</label>
+            <input class="form-control" type="number" id="year_of_study" name="year_of_study" min="1" required
+                   value="{{ student.year_of_study if student else '' }}">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label" for="gpa">GPA</label>
+            <input class="form-control" type="number" id="gpa" name="gpa" min="0" max="4.3" step="0.01" required
+                   value="{{ student.gpa if student else '' }}">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="projects">Projects</label>
+            <textarea class="form-control" id="projects" name="projects" rows="3">{{ application.projects if application else '' }}</textarea>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="preferences">Preferences</label>
+            <textarea class="form-control" id="preferences" name="preferences" rows="3">{{ application.preferences if application else '' }}</textarea>
+          </div>
+        </div>
+
+        <div class="text-end mt-4">
+          <button class="btn btn-primary" type="submit">{{ "Resubmit" if application else "Submit application" }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

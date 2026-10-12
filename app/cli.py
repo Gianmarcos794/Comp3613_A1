@@ -61,7 +61,7 @@ def cmd_seed(args: argparse.Namespace) -> None:
     ensure_db_and_tables()
 
     demo_users = [
-        ("bob", "bob@example.com", "bobpass", "regular_user"),
+        ("bob", "bob@example.com", "bobpass", "student"),
         ("admin", "admin@example.com", "adminpass", "admin"),
     ]
 
