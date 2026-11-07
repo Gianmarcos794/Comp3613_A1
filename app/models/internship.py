@@ -2,6 +2,11 @@ from datetime import date
 from typing import Optional
 
 from sqlmodel import Field, SQLModel
+from enum import Enum
+
+class InternshipStatus(str, Enum):
+    OPEN = "open"
+    CLOSED = "closed"
 
 
 class Internship(SQLModel, table=True):
@@ -17,7 +22,7 @@ class Internship(SQLModel, table=True):
     minimum_year: int
     number_of_positions: int
     deadline: date
-    status: str = Field(default="open")
+    status: InternshipStatus = Field(default=InternshipStatus.OPEN)
 
     # ── INTERNSHIP SNIPPET (you complete) ─────────────────────────────────
     # Add the remaining INTERNSHIP columns from the erDiagram in docs/report.md,

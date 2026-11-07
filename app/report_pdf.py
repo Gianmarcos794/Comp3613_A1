@@ -232,7 +232,9 @@ def export_report(
 
     pdf = _new_pdf(bool(missing))
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
-        cover = _cover_html(clean_name, clean_id, app_url, logins, integrity, missing)
+        cover = _cover_html(
+            clean_name, clean_id, app_url, logins, integrity, missing, _cover_links(markdown)
+        )
         body = _markdown_to_html(markdown, src.parent, Path(tmp))
         appendix = _markdown_to_html(
             appendix_markdown(transcripts),
@@ -584,6 +586,7 @@ def _cover_html(
     logins: str,
     integrity: IntegrityResult,
     missing: list[str],
+    links: list[tuple[str, str]] | None = None,
 ) -> str:
     login_html = " · ".join(
         html_lib.escape(line.strip()) for line in logins.splitlines() if line.strip()
@@ -597,6 +600,7 @@ def _cover_html(
         ("Student ID", html_lib.escape(student_id), False),
         ("Deployed app", html_lib.escape(app_url), False),
         ("Logins", login_html, False),
+        *((label, html_lib.escape(value), False) for label, value in links or []),
         ("Skill integrity", integrity_value, not integrity.ok),
     ]
     cells = []
@@ -647,6 +651,19 @@ def _section(markdown: str, *titles: str) -> str:
         if capture:
             lines.append(line)
     return "\n".join(lines).strip()
+
+
+def _cover_links(markdown: str) -> list[tuple[str, str]]:
+    """GitHub repo, YouTube video, and agent rows for the cover."""
+    urls = re.findall(r"https?://[^\s)]+", markdown)
+    github = next((u for u in urls if "github.com/" in u and "uwidcit" not in u), "")
+    youtube_urls = re.findall(r"https?://[^\s)]+", _section(markdown, "youtube url"))
+    agent = " ".join(_section(markdown, "agent").split())
+    return [
+        ("GitHub", github or "Not yet"),
+        ("YouTube", youtube_urls[0] if youtube_urls else "Not yet"),
+        ("Agent", agent or "Not yet"),
+    ]
 
 
 def _marker_access(markdown: str) -> tuple[str, str, list[str]]:
