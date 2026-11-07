@@ -13,7 +13,12 @@ async def get_current_user(request:Request, db:SessionDep)->User:
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    token = request.cookies.get("access_token")
+    # API clients (Postman) send "Authorization: Bearer <token>"; browsers send the cookie.
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.lower().startswith("bearer "):
+        token = auth_header[7:].strip()
+    else:
+        token = request.cookies.get("access_token")
 
     if token is None:
         raise credentials_exception

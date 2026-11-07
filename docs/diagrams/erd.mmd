@@ -1,0 +1,58 @@
+erDiagram
+  USER ||--o| STUDENT : "has profile"
+  USER ||--o| COMPANY : "has profile"
+  COMPANY ||--o{ INTERNSHIP : posts
+  STUDENT ||--o| APPLICATION : submits
+  APPLICATION ||--o| MATCH : "matched via"
+  INTERNSHIP ||--o{ MATCH : receives
+
+  USER {
+    int id PK
+    string username UK
+    string email UK
+    string password "stored hashed"
+    string role "student | company | admin"
+  }
+  STUDENT {
+    int id PK
+    int user_id FK, UK
+    string full_name
+    string student_id UK
+    string program
+    int year_of_study
+    float gpa
+  }
+  COMPANY {
+    int id PK
+    int user_id FK, UK
+    string company_name
+    string contact_email
+    string industry
+  }
+  INTERNSHIP {
+    int id PK
+    int company_id FK
+    string title
+    string description
+    string location
+    string required_program
+    float minimum_gpa
+    int minimum_year
+    int number_of_positions
+    date deadline
+    string status "open | closed"
+  }
+  APPLICATION {
+    int id PK
+    int student_id FK, UK
+    string preferences "free text"
+    string projects "free text"
+    datetime submitted_date
+    string status "submitted | matched | rejected"
+  }
+  MATCH {
+    int id PK
+    int application_id FK, UK
+    int internship_id FK
+    datetime matched_date
+  }
