@@ -29,9 +29,7 @@ InternSearch treats internships as a **matching service run by the department**,
 
 ## 3. Entity Relationship Diagram
 
-![Entity relationship diagram](../diagrams/erd.png)
-
-_Source: `docs/diagrams/erd.mmd`. Export it to `docs/diagrams/erd.png` (for example at https://mermaid.live) so the image above shows up._
+![Entity relationship diagram](../diagrams/erdDiagram.png)
 
 ## 4. Application Wireframe
 

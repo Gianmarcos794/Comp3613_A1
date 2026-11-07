@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from sqlmodel import Field, SQLModel
+from sqlmodel import AutoString, Field, SQLModel
 from enum import Enum
 
 class InternshipStatus(str, Enum):
@@ -22,7 +22,9 @@ class Internship(SQLModel, table=True):
     minimum_year: int
     number_of_positions: int
     deadline: date
-    status: InternshipStatus = Field(default=InternshipStatus.OPEN)
+    # Stored as plain text ("open" / "closed"), matching existing rows and the services.
+    # Without sa_type, SQLAlchemy stores enum NAMES ("OPEN") and crashes reading "open".
+    status: InternshipStatus = Field(default=InternshipStatus.OPEN, sa_type=AutoString)
 
     # ── INTERNSHIP SNIPPET (you complete) ─────────────────────────────────
     # Add the remaining INTERNSHIP columns from the erDiagram in docs/report.md,
