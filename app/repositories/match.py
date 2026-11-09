@@ -66,6 +66,9 @@ class MatchRepository:
             self.db.add(internship)
             self.db.commit()
             self.db.refresh(match)
+            # Commit expires every object; reload the others so callers can still read them.
+            self.db.refresh(application)
+            self.db.refresh(internship)
             return match
         except Exception as e:
             logger.error(f"An error occurred while saving match: {e}")

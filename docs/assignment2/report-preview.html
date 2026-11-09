@@ -1,0 +1,581 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Assignment 2 Report</title><style>
+body { font-family: Arial, Helvetica, sans-serif; max-width: 1100px; margin: 32px auto; padding: 0 16px;
+       color: #111; background: #fff; font-size: 14px; line-height: 1.45; }
+h1 { font-weight: 400; font-size: 28px; } h2 { margin-top: 40px; border-bottom: 2px solid #111; padding-bottom: 4px; }
+h4 { margin: 28px 0 8px; }
+table { border-collapse: collapse; width: 100%; margin: 8px 0 20px; }
+th, td { border: 1px solid #000; padding: 6px 8px; vertical-align: top; text-align: left; font-size: 12.5px; }
+th { font-weight: 700; background: #fafafa; }
+td input[type=checkbox] { margin: 0 6px 4px 0; vertical-align: middle; }
+img { max-width: 100%; border: 1px solid #ddd; }
+code { background: #f2f2f2; padding: 1px 4px; border-radius: 3px; }
+pre { background: #f2f2f2; padding: 10px; overflow-x: auto; }
+@media print { body { margin: 0; max-width: none; } h2 { page-break-before: auto; } tr { page-break-inside: avoid; } }
+</style></head><body><h1>COMP 3613 Assignment 2: Test Planning &amp; Implementation</h1>
+<p><strong>Name:</strong> <em>your name</em>
+<strong>ID:</strong> <em>your ID</em>
+<strong>Repository:</strong> https://github.com/Gianmarcos794/Comp3613_A1</p>
+<hr />
+<h2>1. Project Description</h2>
+<p><strong>Internship Platform (InternSearch)</strong> is a departmental system that takes student applications and matches them to internship positions offered by participating companies.</p>
+<p>InternSearch treats internships as a <strong>matching service run by the department</strong>, not a job board.</p>
+<ul>
+<li><strong>Students apply to a general pool</strong>, not to a specific posting. Each student has one application: their profile details (program, year, GPA), the kind of role they want, and their projects. The student sees its status: submitted, matched (with the internship title, company and location), or rejected. A rejected application can be edited and resubmitted.</li>
+<li><strong>Companies are trusted partners.</strong> They cannot register themselves; the Admin creates each company account once the company is approved. A company publishes internships with requirements (program, minimum GPA, minimum year, number of positions, deadline), manages or closes them, and sees the students matched to them.</li>
+<li><strong>The Admin makes the match, and it is final.</strong> The system always checks requirements first (program, GPA, year, open status, deadline not passed), so the Admin only picks from internships the student is eligible for. If none fit, the Admin rejects the application.</li>
+<li><strong>Rules that keep it fair:</strong> student sign-up needs a <code>.edu</code> university email, GPA is capped at 4.3, an internship closes when its positions are filled, and an internship with matches can only be closed, never deleted.</li>
+</ul>
+<p><strong>Workflows:</strong></p>
+<ol>
+<li>Publish/Manage Internships (Company)</li>
+<li>Submit Application (Student)</li>
+<li>Match Application to Internship (Admin)</li>
+</ol>
+<h2>2. Use Case Diagram</h2>
+<p><img src="../diagrams/use-case.png" alt="Use case diagram" /></p>
+<h2>3. Entity Relationship Diagram</h2>
+<p><img src="../diagrams/erdDiagram.png" alt="Entity relationship diagram" /></p>
+<h2>4. Application Wireframe</h2>
+<p><img src="../wireframes/wireframes.png" alt="Wireframes for all three workflows" /></p>
+<hr />
+<h2>5. Test Plans</h2>
+<h3>5.1 User Acceptance Test Plan</h3>
+<p>Based on the wireframe screens above. The tester ticks each step and criterion as they go, then marks Pass or Fail.</p>
+<p><strong>InternSearch User Acceptance Test Report</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tester Name</th>
+<th>Tester Position</th>
+<th>Date of Test (DD/MM/YYYY)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4>1. Accounts</h4>
+<table>
+<thead>
+<tr>
+<th>Test Case</th>
+<th>Pre-conditions</th>
+<th>Test Steps</th>
+<th>Test Criteria</th>
+<th>Success</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1.1 Register (Student)</strong></td>
+<td>None</td>
+<td><input type="checkbox"> On the landing page, click &quot;Create an account&quot;<br><input type="checkbox"> Enter a username, a university email ending in <code>.edu</code>, and a password<br><input type="checkbox"> Press &quot;Create account&quot;</td>
+<td><input type="checkbox"> User is directed to the Sign in page<br><input type="checkbox"> User is alerted &quot;Registration completed! Sign in now!&quot;<br><input type="checkbox"> Registering with a non-<code>.edu</code> email shows an error asking for a university email</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>1.2 Log In</strong></td>
+<td><input type="checkbox"> Has an account (student, company or admin)</td>
+<td><input type="checkbox"> On the login page, fill in username and password<br><input type="checkbox"> Press &quot;Sign in&quot;</td>
+<td><input type="checkbox"> Student / company is directed to their Dashboard; admin to the Admin dashboard<br><input type="checkbox"> &quot;Welcome, <em>username</em>&quot; is shown in the header<br><input type="checkbox"> &quot;Logout&quot; is shown in the side menu<br><input type="checkbox"> A wrong password shows &quot;Incorrect username or password&quot;</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>1.3 Log Out</strong></td>
+<td><input type="checkbox"> Logged in</td>
+<td><input type="checkbox"> Press &quot;Logout&quot; in the side menu</td>
+<td><input type="checkbox"> User is returned to the public site<br><input type="checkbox"> Opening the dashboard URL again does not show the dashboard</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+</tbody>
+</table>
+<h4>2. Submit Application (Student)</h4>
+<table>
+<thead>
+<tr>
+<th>Test Case</th>
+<th>Pre-conditions</th>
+<th>Test Steps</th>
+<th>Test Criteria</th>
+<th>Success</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2.1 Submit Application</strong></td>
+<td><input type="checkbox"> Logged in as a student<br><input type="checkbox"> Has not applied yet</td>
+<td><input type="checkbox"> On the Dashboard, the &quot;My application&quot; card shows no application yet<br><input type="checkbox"> Click &quot;Submit application&quot;<br><input type="checkbox"> Fill in Name, ID, Program, Year, GPA, Projects and Preferences<br><input type="checkbox"> Press &quot;Submit application&quot;</td>
+<td><input type="checkbox"> Email is filled in automatically and cannot be changed<br><input type="checkbox"> User is returned to the Dashboard<br><input type="checkbox"> User is alerted &quot;Application submitted.&quot;<br><input type="checkbox"> &quot;My application&quot; shows Status: Submitted and the submitted date</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>2.2 Edit and Resubmit Application</strong></td>
+<td><input type="checkbox"> Logged in as a student<br><input type="checkbox"> Application is Submitted (not matched)</td>
+<td><input type="checkbox"> On the Dashboard, click &quot;Manage application&quot;<br><input type="checkbox"> Change the Preferences<br><input type="checkbox"> Press &quot;Resubmit&quot;</td>
+<td><input type="checkbox"> The Edit application form opens with the current details filled in<br><input type="checkbox"> User is returned to the Dashboard with &quot;Application submitted.&quot;<br><input type="checkbox"> The submitted date is updated</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>2.3 View Rejected Status and Resubmit</strong></td>
+<td><input type="checkbox"> Logged in as a student<br><input type="checkbox"> Admin has rejected the application (4.4)</td>
+<td><input type="checkbox"> Open the Dashboard<br><input type="checkbox"> Click &quot;Manage application&quot;, update details, press &quot;Resubmit&quot;</td>
+<td><input type="checkbox"> Dashboard says no suitable internship was found and the student can resubmit<br><input type="checkbox"> After resubmitting, status is back to Submitted</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>2.4 View Matched Status</strong></td>
+<td><input type="checkbox"> Logged in as a student<br><input type="checkbox"> Admin has matched the application (4.3)</td>
+<td><input type="checkbox"> Open the Dashboard</td>
+<td><input type="checkbox"> Dashboard says the student has been matched and the application is final<br><input type="checkbox"> The internship title, company and location are shown<br><input type="checkbox"> &quot;Manage application&quot; is no longer available</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+</tbody>
+</table>
+<h4>3. Publish/Manage Internships (Company)</h4>
+<table>
+<thead>
+<tr>
+<th>Test Case</th>
+<th>Pre-conditions</th>
+<th>Test Steps</th>
+<th>Test Criteria</th>
+<th>Success</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>3.1 Publish Internship</strong></td>
+<td><input type="checkbox"> Company account created by the admin (4.1)<br><input type="checkbox"> Logged in as that company</td>
+<td><input type="checkbox"> On the Dashboard under &quot;My internships&quot;, click &quot;New&quot;<br><input type="checkbox"> Fill in Title, Description, Location, Minimum GPA, Required program, Minimum year, Number of positions and a future Deadline<br><input type="checkbox"> Press &quot;Save&quot;</td>
+<td><input type="checkbox"> User is returned to the Dashboard<br><input type="checkbox"> User is alerted &quot;Created <em>title</em>.&quot;<br><input type="checkbox"> A new card shows the title, positions and deadline<br><input type="checkbox"> A past deadline or GPA above 4.3 is refused with a message</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>3.2 Edit Internship</strong></td>
+<td><input type="checkbox"> Logged in as a company<br><input type="checkbox"> Has an open internship</td>
+<td><input type="checkbox"> On the internship card, click &quot;Edit&quot;<br><input type="checkbox"> Change the title or number of positions<br><input type="checkbox"> Press &quot;Save&quot;</td>
+<td><input type="checkbox"> The form opens with the current values filled in<br><input type="checkbox"> User is alerted &quot;Saved <em>title</em>.&quot;<br><input type="checkbox"> The card shows the new values</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>3.3 Close Internship</strong></td>
+<td><input type="checkbox"> Logged in as a company<br><input type="checkbox"> Has an open internship</td>
+<td><input type="checkbox"> On the internship card, click &quot;Close&quot;</td>
+<td><input type="checkbox"> User is alerted &quot;Closed <em>title</em>. It will get no new matches.&quot;<br><input type="checkbox"> The card shows the internship as closed<br><input type="checkbox"> The internship can no longer be edited</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>3.4 View Matched Students</strong></td>
+<td><input type="checkbox"> Logged in as a company<br><input type="checkbox"> At least one student is matched to its internship (4.3)</td>
+<td><input type="checkbox"> On the internship card, click &quot;View matches&quot;</td>
+<td><input type="checkbox"> &quot;Matched students&quot; page lists each student's Name, Student ID, Program, Year, GPA and Email<br><input type="checkbox"> Shows &quot;<em>n</em> / <em>total</em> positions filled&quot;<br><input type="checkbox"> &quot;← Back&quot; returns to the Dashboard</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+</tbody>
+</table>
+<h4>4. Match Application to Internship (Admin)</h4>
+<table>
+<thead>
+<tr>
+<th>Test Case</th>
+<th>Pre-conditions</th>
+<th>Test Steps</th>
+<th>Test Criteria</th>
+<th>Success</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>4.1 Create Company Account</strong></td>
+<td><input type="checkbox"> Logged in as an admin</td>
+<td><input type="checkbox"> Click &quot;Add company&quot; in the side menu<br><input type="checkbox"> Fill in Username, Login email, Password, Company name, Contact email and Industry<br><input type="checkbox"> Press &quot;Create account&quot;</td>
+<td><input type="checkbox"> User is alerted &quot;Company account created for <em>company name</em>.&quot;<br><input type="checkbox"> The company can log in with those details (1.2)<br><input type="checkbox"> A username that is already taken is refused</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>4.2 Find an Application</strong></td>
+<td><input type="checkbox"> Logged in as an admin<br><input type="checkbox"> At least one student has applied (2.1)</td>
+<td><input type="checkbox"> On the Admin dashboard, click &quot;Students&quot;<br><input type="checkbox"> Keep &quot;Unmatched applications&quot; selected<br><input type="checkbox"> Type a name, student ID or program in the search box and press &quot;Search&quot;</td>
+<td><input type="checkbox"> Only unmatched (submitted) applications are listed<br><input type="checkbox"> Each card shows the name, program and GPA<br><input type="checkbox"> The search narrows the list to matching students</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>4.3 Match Application</strong></td>
+<td><input type="checkbox"> Logged in as an admin<br><input type="checkbox"> An unmatched application exists<br><input type="checkbox"> An open internship the student qualifies for exists (3.1)</td>
+<td><input type="checkbox"> On a student's card, click &quot;View&quot;<br><input type="checkbox"> Under &quot;Eligible internships&quot;, click an internship to see its details<br><input type="checkbox"> Press &quot;Match&quot;</td>
+<td><input type="checkbox"> The Match application page shows the student's details and only internships the student meets the requirements for<br><input type="checkbox"> User is returned to the Admin dashboard and alerted &quot;Application matched successfully.&quot;<br><input type="checkbox"> The application no longer appears under &quot;Unmatched applications&quot;<br><input type="checkbox"> When the last position is filled, the internship shows as closed under &quot;Internships&quot;</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+<tr>
+<td><strong>4.4 Reject Application</strong></td>
+<td><input type="checkbox"> Logged in as an admin<br><input type="checkbox"> An unmatched application exists</td>
+<td><input type="checkbox"> On a student's card, click &quot;View&quot;<br><input type="checkbox"> Press &quot;Reject&quot;</td>
+<td><input type="checkbox"> User is returned to the Admin dashboard<br><input type="checkbox"> User is alerted &quot;Rejected <em>name</em>'s application. They can update it and resubmit.&quot;<br><input type="checkbox"> The application no longer appears under &quot;Unmatched applications&quot;</td>
+<td><input type="checkbox"> Pass <input type="checkbox"> Fail</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>General Comments</th>
+<th>Accepted | Rejected</th>
+<th>Signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><br><br><br></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3>5.2 Unit Test Plan</h3>
+<p>Each service is tested <strong>in isolation</strong>: its repositories are replaced with in-memory fakes, so no database, HTTP request or login is involved. The plan covers the success path of each workflow's main action and its most important business rules.</p>
+<p><strong>InternshipService</strong> (Publish/Manage Internships)</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Function</th>
+<th>Input / setup</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UT-01</td>
+<td><code>create_internship</code></td>
+<td>Company user, valid form, deadline in 30 days</td>
+<td>Internship saved with the company's <code>company_id</code> and status <code>open</code></td>
+</tr>
+<tr>
+<td>UT-02</td>
+<td><code>create_internship</code></td>
+<td>Deadline yesterday</td>
+<td><code>InternshipError</code>: &quot;The deadline can't be in the past.&quot;</td>
+</tr>
+<tr>
+<td>UT-03</td>
+<td><code>get_owned</code></td>
+<td>Internship belongs to another company</td>
+<td><code>InternshipError</code>: &quot;Internship not found.&quot;</td>
+</tr>
+<tr>
+<td>UT-04</td>
+<td><code>update_internship</code></td>
+<td>Internship is <code>closed</code></td>
+<td><code>InternshipError</code>: &quot;This internship is closed and can no longer be edited.&quot;</td>
+</tr>
+<tr>
+<td>UT-05</td>
+<td><code>update_internship</code></td>
+<td>2 students matched, positions changed to 1</td>
+<td><code>InternshipError</code>: &quot;...positions can't go below 2.&quot;</td>
+</tr>
+<tr>
+<td>UT-06</td>
+<td><code>update_internship</code></td>
+<td>2 students matched, positions changed from 3 to 2</td>
+<td>Internship status becomes <code>closed</code> (all positions filled)</td>
+</tr>
+<tr>
+<td>UT-07</td>
+<td><code>close_internship</code></td>
+<td>Internship already <code>closed</code></td>
+<td><code>InternshipError</code>: &quot;This internship is already closed.&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ApplicationService</strong> (Submit Application)</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Function</th>
+<th>Input / setup</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UT-08</td>
+<td><code>submit_application</code></td>
+<td>Student's first submit, valid form</td>
+<td>Student profile created; application saved with status <code>submitted</code></td>
+</tr>
+<tr>
+<td>UT-09</td>
+<td><code>submit_application</code></td>
+<td>Existing application is <code>matched</code></td>
+<td><code>ApplicationError</code>: &quot;...has been matched and can no longer be changed.&quot;</td>
+</tr>
+<tr>
+<td>UT-10</td>
+<td><code>submit_application</code></td>
+<td>GPA = 4.5</td>
+<td><code>ApplicationError</code>: &quot;GPA must be between 0 and 4.3.&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MatchService</strong> (Match Application to Internship)</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Function</th>
+<th>Input / setup</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UT-11</td>
+<td><code>match_application</code></td>
+<td>Submitted application, eligible internship with free positions</td>
+<td>Match created; application status <code>matched</code></td>
+</tr>
+<tr>
+<td>UT-12</td>
+<td><code>match_application</code></td>
+<td>Internship has 1 position left</td>
+<td>Match created; internship status becomes <code>closed</code></td>
+</tr>
+<tr>
+<td>UT-13</td>
+<td><code>match_application</code></td>
+<td>Internship not in the student's eligible list</td>
+<td><code>MatchError</code>: &quot;That internship isn't eligible for this student any more.&quot;</td>
+</tr>
+<tr>
+<td>UT-14</td>
+<td><code>reject_application</code></td>
+<td>Submitted application</td>
+<td>Application status becomes <code>rejected</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>AuthService &amp; CompanyService</strong> (Register / Create Company Account)</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Function</th>
+<th>Input / setup</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UT-15</td>
+<td><code>AuthService.register_user</code></td>
+<td>Email <code>bob@gmail.com</code></td>
+<td><code>RegistrationError</code>: &quot;Please sign up with your university email...&quot;</td>
+</tr>
+<tr>
+<td>UT-16</td>
+<td><code>CompanyService.create_company_account</code></td>
+<td>Username already taken</td>
+<td><code>CompanyError</code>: &quot;That username is already taken.&quot;</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3 Integration Test Plan</h3>
+<p>Integration tests send real HTTP requests to the JSON API with FastAPI's <code>TestClient</code>. Each request runs through the <strong>route → service → repository → database</strong> chain against a fresh in-memory SQLite database, which replaces the app's session dependency. Each test checks the HTTP response and the resulting database state.</p>
+<p><strong>Authentication &amp; Authorization</strong></p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Endpoint</th>
+<th>Role</th>
+<th>Setup / input</th>
+<th>Expected response</th>
+<th>Expected DB change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IT-01</td>
+<td><code>POST /api/register</code></td>
+<td>none</td>
+<td>Username, <code>.edu</code> email, password</td>
+<td><code>201</code>, <code>role</code> = <code>student</code></td>
+<td>New user with role <code>student</code></td>
+</tr>
+<tr>
+<td>IT-02</td>
+<td><code>POST /api/login</code></td>
+<td>none</td>
+<td>Wrong password</td>
+<td><code>401</code>, &quot;Incorrect username or password&quot;</td>
+<td>None</td>
+</tr>
+<tr>
+<td>IT-03</td>
+<td><code>GET /api/internships</code></td>
+<td>none</td>
+<td>No token</td>
+<td><code>401</code> JSON</td>
+<td>None</td>
+</tr>
+<tr>
+<td>IT-04</td>
+<td><code>POST /api/internships</code></td>
+<td>Student</td>
+<td>Valid internship body</td>
+<td><code>401</code>, &quot;Only companies can access this page&quot;</td>
+<td>No internship created</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Publish/Manage Internships (Company)</strong></p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Endpoint</th>
+<th>Role</th>
+<th>Setup / input</th>
+<th>Expected response</th>
+<th>Expected DB change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IT-05</td>
+<td><code>POST /api/internships</code></td>
+<td>Company</td>
+<td>Valid body, deadline in 30 days</td>
+<td><code>201</code>, <code>status</code> = <code>open</code></td>
+<td>Internship saved with the company's <code>company_id</code></td>
+</tr>
+<tr>
+<td>IT-06</td>
+<td><code>POST /api/internships</code></td>
+<td>Company</td>
+<td>Deadline yesterday</td>
+<td><code>400</code>, &quot;The deadline can't be in the past.&quot;</td>
+<td>No internship created</td>
+</tr>
+<tr>
+<td>IT-07</td>
+<td><code>GET /api/internships/{id}</code></td>
+<td>Company</td>
+<td>Internship belongs to another company</td>
+<td><code>404</code>, &quot;Internship not found.&quot;</td>
+<td>None</td>
+</tr>
+<tr>
+<td>IT-08</td>
+<td><code>PATCH /api/internships/{id}</code></td>
+<td>Company</td>
+<td><code>{&quot;status&quot;: &quot;closed&quot;}</code></td>
+<td><code>200</code>, <code>status</code> = <code>closed</code></td>
+<td>Status <code>closed</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Submit Application (Student)</strong></p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Endpoint</th>
+<th>Role</th>
+<th>Setup / input</th>
+<th>Expected response</th>
+<th>Expected DB change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IT-09</td>
+<td><code>PUT /api/application</code></td>
+<td>Student</td>
+<td>Valid application body</td>
+<td><code>200</code>, <code>status</code> = <code>submitted</code></td>
+<td>Student profile and application created</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Match Application to Internship (Admin)</strong></p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Endpoint</th>
+<th>Role</th>
+<th>Setup / input</th>
+<th>Expected response</th>
+<th>Expected DB change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IT-10</td>
+<td><code>POST /api/companies</code></td>
+<td>Admin</td>
+<td>Valid company account body</td>
+<td><code>201</code>, company returned</td>
+<td>User (role <code>company</code>) and company profile created</td>
+</tr>
+<tr>
+<td>IT-11</td>
+<td><code>POST /api/matches</code></td>
+<td>Admin</td>
+<td>Submitted application, eligible internship with 1 position</td>
+<td><code>201</code>, internship <code>status</code> = <code>closed</code></td>
+<td>Match created; application <code>matched</code>; internship <code>closed</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>End-to-end workflow</strong></p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Endpoint</th>
+<th>Role</th>
+<th>Setup / input</th>
+<th>Expected response</th>
+<th>Expected DB change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IT-12</td>
+<td>Full flow across all endpoints</td>
+<td>Admin → Company → Student → Admin</td>
+<td>Admin creates a company; company publishes an internship; student registers and applies; admin matches them</td>
+<td>Student's <code>GET /api/application</code> shows status <code>matched</code> with the internship and company; company's <code>GET /api/internships/{id}/matches</code> lists the student</td>
+<td>Matching user, company, internship, student, application and match rows all linked</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>6. Implementation</h2>
+<ul>
+<li><strong>Repository:</strong> https://github.com/Gianmarcos794/Comp3613_A1</li>
+<li><strong>Unit tests:</strong> <code>tests/unit/</code></li>
+<li><strong>Integration tests:</strong> <code>tests/integration/</code></li>
+<li><strong>API tests:</strong> <code>postman/</code> (Postman collection exported to JSON)</li>
+</ul>
+<p>Run with:</p>
+<pre><code class="language-bash">pytest tests/unit -v
+pytest tests/integration -v
+</code></pre>
+<hr />
+<h2>7. Reports</h2>
+<h3>7.1 Unit Tests Report</h3>
+<p><em>Screenshot of <code>pytest tests/unit -v</code>.</em></p>
+<h3>7.2 Integration Tests Report</h3>
+<p><em>Screenshot of <code>pytest tests/integration -v</code>.</em></p>
+<h3>7.3 Postman Collection Run Report</h3>
+<p><em>Screenshot of the Postman Collection Runner results.</em></p>
+</body></html>
