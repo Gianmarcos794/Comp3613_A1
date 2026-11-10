@@ -235,4 +235,4 @@ API tests: start the app (`python manage.py run`), import the collection into Po
 
 15 requests, 32 / 32 test checks passed.
 
-![Postman collection run](screenshots/postman.png)
+![Postman collection run](screenshots/postman1.png)
