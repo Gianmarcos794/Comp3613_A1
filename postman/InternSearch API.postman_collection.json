@@ -1,0 +1,765 @@
+{
+  "info": {
+    "_postman_id": "b30cf202-2f93-457b-8301-7a6e05c3eea5",
+    "name": "InternSearch API",
+    "description": "API tests for the InternSearch JSON API (/api). Run the whole collection in order with the Collection Runner while the app is running (python manage.py run). Each run creates its own company, student and internship.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52268253",
+    "_collection_link": "https://go.postman.co/collection/52268253-b30cf202-2f93-457b-8301-7a6e05c3eea5?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. Setup (login & accounts)",
+      "item": [
+        {
+          "name": "Admin login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Unique suffix so the collection can run again without 'already taken' errors",
+                  "pm.collectionVariables.set('run_id', String(Date.now()).slice(-7));",
+                  "const day = 24 * 60 * 60 * 1000;",
+                  "pm.collectionVariables.set('future_date', new Date(Date.now() + 30 * day).toISOString().slice(0, 10));",
+                  "pm.collectionVariables.set('past_date', new Date(Date.now() - day).toISOString().slice(0, 10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "const data = pm.response.json();",
+                  "pm.test(\"Returns an access token\", () => pm.expect(data.access_token).to.be.a(\"string\"));",
+                  "pm.test(\"Role is admin\", () => pm.expect(data.role).to.eql(\"admin\"));",
+                  "pm.collectionVariables.set('admin_token', data.access_token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{admin_username}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin creates company account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"201 Created\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Company name saved\", () => pm.expect(pm.response.json().company_name).to.eql(\"Acme \" + pm.collectionVariables.get(\"run_id\")));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"comp{{run_id}}\",\n  \"email\": \"login{{run_id}}@acme.com\",\n  \"password\": \"comppass\",\n  \"company_name\": \"Acme {{run_id}}\",\n  \"contact_email\": \"hr{{run_id}}@acme.com\",\n  \"industry\": \"Software\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/companies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "companies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Company login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Role is company\", () => pm.expect(pm.response.json().role).to.eql(\"company\"));",
+                  "pm.collectionVariables.set('company_token', pm.response.json().access_token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"comp{{run_id}}\",\n  \"password\": \"comppass\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Student registers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"201 Created\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Role is student\", () => pm.expect(pm.response.json().role).to.eql(\"student\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"stud{{run_id}}\",\n  \"email\": \"stud{{run_id}}@uwi.edu\",\n  \"password\": \"studpass\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Student login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('student_token', pm.response.json().access_token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"stud{{run_id}}\",\n  \"password\": \"studpass\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Authorization",
+      "item": [
+        {
+          "name": "No token is unauthorized",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"401 Unauthorized\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/internships",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "internships"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Student cannot publish an internship",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"401 Unauthorized\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Only companies allowed\", () => pm.expect(pm.response.json().detail).to.eql(\"Only companies can access this page\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Backend Intern {{run_id}}\",\n  \"description\": \"FastAPI and SQLModel work\",\n  \"location\": \"Port of Spain\",\n  \"required_program\": \"Computer Science\",\n  \"minimum_gpa\": 3.0,\n  \"minimum_year\": 2,\n  \"number_of_positions\": 1,\n  \"deadline\": \"{{future_date}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/internships",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "internships"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Publish/Manage Internships (Company)",
+      "item": [
+        {
+          "name": "Publish internship",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"201 Created\", () => pm.response.to.have.status(201));",
+                  "const data = pm.response.json();",
+                  "pm.test(\"Status is open\", () => pm.expect(data.status).to.eql(\"open\"));",
+                  "pm.test(\"Has an id\", () => pm.expect(data.id).to.be.a(\"number\"));",
+                  "pm.collectionVariables.set('internship_id', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{company_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Backend Intern {{run_id}}\",\n  \"description\": \"FastAPI and SQLModel work\",\n  \"location\": \"Port of Spain\",\n  \"required_program\": \"Computer Science\",\n  \"minimum_gpa\": 3.0,\n  \"minimum_year\": 2,\n  \"number_of_positions\": 1,\n  \"deadline\": \"{{future_date}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/internships",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "internships"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish internship with past deadline is refused",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"400 Bad Request\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Deadline message\", () => pm.expect(pm.response.json().detail).to.eql(\"The deadline can't be in the past.\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{company_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Backend Intern {{run_id}}\",\n  \"description\": \"FastAPI and SQLModel work\",\n  \"location\": \"Port of Spain\",\n  \"required_program\": \"Computer Science\",\n  \"minimum_gpa\": 3.0,\n  \"minimum_year\": 2,\n  \"number_of_positions\": 1,\n  \"deadline\": \"{{past_date}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/internships",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "internships"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit internship",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Title updated\", () => pm.expect(pm.response.json().title).to.include(\"(edited)\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{company_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Backend Intern {{run_id}} (edited)\",\n  \"description\": \"FastAPI and SQLModel work\",\n  \"location\": \"Port of Spain\",\n  \"required_program\": \"Computer Science\",\n  \"minimum_gpa\": 3.0,\n  \"minimum_year\": 2,\n  \"number_of_positions\": 1,\n  \"deadline\": \"{{future_date}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/internships/{{internship_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "internships",
+                "{{internship_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Submit Application (Student)",
+      "item": [
+        {
+          "name": "Submit application",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "const data = pm.response.json();",
+                  "pm.test(\"Status is submitted\", () => pm.expect(data.status).to.eql(\"submitted\"));",
+                  "pm.collectionVariables.set('application_id', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Postman Student {{run_id}}\",\n  \"student_id\": \"81{{run_id}}\",\n  \"program\": \"Computer Science\",\n  \"year_of_study\": 3,\n  \"gpa\": 3.5,\n  \"projects\": \"Chess engine\",\n  \"preferences\": \"Backend development\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/application",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "application"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View application status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Status is submitted\", () => pm.expect(pm.response.json().application.status).to.eql(\"submitted\"));",
+                  "pm.test(\"No placement yet\", () => pm.expect(pm.response.json().placement).to.be.null);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/application",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "application"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Match Application (Admin)",
+      "item": [
+        {
+          "name": "View application with eligible internships",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "const ids = pm.response.json().eligible_internships.map(i => i.id);",
+                  "pm.test(\"New internship is eligible\", () => pm.expect(ids).to.include(pm.collectionVariables.get(\"internship_id\")));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/applications/{{application_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{application_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Match application to internship",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"201 Created\", () => pm.response.to.have.status(201));",
+                  "const data = pm.response.json();",
+                  "pm.test(\"Match links the application\", () => pm.expect(data.match.application_id).to.eql(pm.collectionVariables.get(\"application_id\")));",
+                  "pm.test(\"Last position filled, internship closed\", () => pm.expect(data.internship.status).to.eql(\"closed\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"application_id\": \"{{application_id}}\",\n  \"internship_id\": \"{{internship_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/matches",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "matches"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Results",
+      "item": [
+        {
+          "name": "Company sees matched student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "const names = pm.response.json().map(m => m.student.full_name);",
+                  "pm.test(\"Lists the matched student\", () => pm.expect(names).to.eql([\"Postman Student \" + pm.collectionVariables.get(\"run_id\")]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{company_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/internships/{{internship_id}}/matches",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "internships",
+                "{{internship_id}}",
+                "matches"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "admin_username",
+      "value": "admin"
+    },
+    {
+      "key": "admin_password",
+      "value": "adminpass"
+    },
+    {
+      "key": "run_id",
+      "value": ""
+    },
+    {
+      "key": "future_date",
+      "value": ""
+    },
+    {
+      "key": "past_date",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "company_token",
+      "value": ""
+    },
+    {
+      "key": "student_token",
+      "value": ""
+    },
+    {
+      "key": "internship_id",
+      "value": ""
+    },
+    {
+      "key": "application_id",
+      "value": ""
+    }
+  ]
+}
